@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import Login from "./Login";
-import TaskDashboard from "./components/TaskDashboard";
+import Signup from "./Signup";
+import TaskDashboard from "./components/TaskDashboard"; // Import TaskDashboard
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleSignup = () => setShowLogin(true);
+  const switchForm = () => setShowLogin(!showLogin);
 
   return (
     <div>
       {isLoggedIn ? (
-        <TaskDashboard />
+        <TaskDashboard /> // Show TaskDashboard after login
+      ) : showLogin ? (
+        <Login onLogin={handleLogin} onSwitch={switchForm} />
       ) : (
-        <Login onLogin={handleLogin} />
+        <Signup onSignup={handleSignup} onSwitch={switchForm} />
       )}
     </div>
   );
