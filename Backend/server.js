@@ -24,8 +24,9 @@ const UserSchema = new mongoose.Schema({
   password: String,
   tasks: {
     pending: [{ id: Number, name: String, time: String }],
-    ongoing: [{ id: Number, name: String, time: String }],
+    ongoing: [{ id: Number, name: String, time: String ,dueDate:Date}],
     completed: [{ id: Number, name: String, time: String }],
+
   },
 });
 const User = mongoose.model("User", UserSchema);
@@ -119,6 +120,22 @@ app.delete("/tasks/:taskId", authMiddleware, async (req, res) => {
   }
   res.status(400).json({ error: "Task not found" });
 });
+
+// Set Due Date
+app.put("/tasks/due-date", authMiddleware, async (req, res) => {
+  const { taskId, dueDate } = req.body;
+  for (let section of ["pending", "ongoing", "completed"]) {
+    const task = req.user.tasks[section].find((t) => t.id == taskId);
+    if (task) {
+      task.dueDate = dueDate;
+      await req.user.save();
+      return res.json(req.user.tasks);
+    }
+  }
+  res.status(400).json({ error: "Task not found" });
+});
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
