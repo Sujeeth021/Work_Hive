@@ -106,5 +106,19 @@ app.put("/tasks/move", authMiddleware, async (req, res) => {
   res.json(req.user.tasks);
 });
 
+// Delete Task
+app.delete("/tasks/:taskId", authMiddleware, async (req, res) => {
+  const { taskId } = req.params;
+  for (let section of ["pending", "ongoing", "completed"]) {
+    const taskIndex = req.user.tasks[section].findIndex((t) => t.id == taskId);
+    if (taskIndex !== -1) {
+      req.user.tasks[section].splice(taskIndex, 1);
+      await req.user.save();
+      return res.json(req.user.tasks);
+    }
+  }
+  res.status(400).json({ error: "Task not found" });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
