@@ -1,11 +1,10 @@
 import React from "react";
 
-function TaskSection({ title, tasks, color, onMove, onAdd, newTask, setNewTask }) {
+function TaskSection({ title, tasks, color, onMove, onAdd, newTask, setNewTask, onDelete }) {
   return (
     <div className={`bg-${color}-100 p-4 rounded-lg shadow-lg`}>
       <h2 className="text-xl font-semibold mb-2">{title} Tasks</h2>
 
-      {/* Show Add Task Input & Button Only for Ongoing Section */}
       {title === "Ongoing" && (
         <div className="mb-4 flex">
           <input
@@ -51,6 +50,14 @@ function TaskSection({ title, tasks, color, onMove, onAdd, newTask, setNewTask }
                   Move to Pending
                 </button>
               </div>
+            )}
+            {title === "Completed" && (
+              <button
+                onClick={() => onDelete(task.id)}
+                className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+              >
+                Delete
+              </button>
             )}
           </li>
         ))}
